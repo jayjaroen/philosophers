@@ -72,6 +72,7 @@ void *routine(void* (arg))
 	return (NULL);
 }
 
+
 int main(void)
 {
 	pthread_t th[4];
