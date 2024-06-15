@@ -5,6 +5,10 @@
 //////////////////// Differences between threads && processes ////////
 /// see the run time ./(program)
 // Thread Having access to the same variable
+/// Deadlock condition -> data race (Valgrind ,Helgrind)
+// valgrind --tool=helgrind ./philo --> checking threads, data races
+
+
 typedef struct s_struct
 {
 	long	*add;

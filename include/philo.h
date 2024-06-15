@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/06/09 15:45:15 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/06/15 12:20:25 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,30 @@
 # include <sys/time.h> // gettimeofday
 # include <limits.h>
 
+/**ANSI escape codes are special sequences of characters that start with the 
+	escape character (\033 or \x1b) followed by [ and end with a command.
+	Has both foreground text color and blackground text*/
+# define RED "\033[1;31m" /*Bold red*/	
 /// Data structure
 // each philopher 
-typedef struct s_fork
+typedef struct s_table t_table;
+typedef struct s_fork // fork is a mutex
 {
 	pthread_mutex_t	fork;
 	int				fork_id;
 }	t_fork;
+
+typedef struct s_philo
+{
+	int			id;
+	long		meal_counter;
+	long		last_meal_time;
+	bool		is_full;
+	t_fork		*left_fork;
+	t_fork		*right_fork;
+	pthread_t	thread_id; //each philo is a thread	
+	t_table		*table; // but only one table
+}	t_philo;
 
 typedef struct s_table
 {
@@ -41,17 +58,6 @@ typedef struct s_table
 	t_philo	*philos; //array to all the philos
 }	t_table;
 
-typedef struct s_philo
-{
-	int			id;
-	long		meal_counter;
-	long		last_meal_time;
-	bool		is_full;
-	t_fork		*left_fork;
-	t_fork		*right_fork;
-	pthread_t	thread_id; //each philo is a thread	
-	t_table		*table; // but only one table
-}	t_philo;
 //// fork is mulex in this context
 
 #endif
