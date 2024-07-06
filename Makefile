@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+         #
+#    By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/03 12:58:43 by jjaroens          #+#    #+#              #
-#    Updated: 2024/06/09 15:10:08 by jjaroens         ###   ########.fr        #
+#    Updated: 2024/07/06 15:12:17 by jjaroens         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = srcs/main.c
+SRCS = srcs/main.c srcs/utils.c
 
 INCLUDE = include 
 

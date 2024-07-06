@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/06/15 12:20:25 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/07/06 16:52:12 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@
 /**ANSI escape codes are special sequences of characters that start with the 
 	escape character (\033 or \x1b) followed by [ and end with a command.
 	Has both foreground text color and blackground text*/
-# define RED "\033[1;31m" /*Bold red*/	
+# define RED_BOLD "\033[1;31m" /*Bold red*/	
+# define Red "\033[0;31m"
+# define Green "\033[0;32m"
+# define Yellow "\033[0;33m"
+# define Blue "\033[0;34m"
+# define Magenta "\033[0;35m"
+# define Cyan "\033[0;36m"
+# define White "\033[0;37m"
 /// Data structure
 // each philopher 
 typedef struct s_table t_table;
@@ -59,5 +66,7 @@ typedef struct s_table
 }	t_table;
 
 //// fork is mulex in this context
+
+int	ft_atoi(char *str);
 
 #endif
