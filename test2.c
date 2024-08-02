@@ -10,12 +10,15 @@ int fuel = 0;
 
 void *fuel_filling()
 {
-	printf("Ffilling fuel\n");
+	printf("filling the fuel\n");
+	fuel = 10;
+	return (NULL);
 }
 
 void *car(void *arg)
 {
 	printf("here to get fuel\n");
+	return (NULL);
 }
 
 int	main(int argc, char **argv)
@@ -34,7 +37,7 @@ int	main(int argc, char **argv)
 		}
 		else
 		{
-			if (pthread_creat(&th[i], NULL, &car, NULL) != 0)
+			if (pthread_create(&th[i], NULL, &car, NULL) != 0)
 				perror("Failed to create thread\n");
 		}
 		i++;
@@ -49,5 +52,6 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	pthread_mutex_destroy(&mutexFuel);
+	printf("fuel is %d\n", fuel);
 	return (0);
 }

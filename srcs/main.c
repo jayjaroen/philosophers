@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:58:05 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/07/06 16:58:47 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/07/22 20:34:57 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,3 +67,8 @@ int main(int argc, char **argv)
 	}
 	
 }
+/*Step
+1. Checking error arguments // Error prevention 
+2. 
+
+*/
