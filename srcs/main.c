@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:58:05 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/21 16:40:34 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/23 15:57:31 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo.h"
+#include "philo.h"
 
 // The program takes four arguments
 // The fifth agrument is optional 
@@ -32,18 +32,6 @@
 // philo finish -> eat && die && join
 // while eat && sleep && finish eating + unlock fork 	
 
-pthread_mutex_t test_philo; // only for testing, global variable is not allow
-void	*test(void *args)
-{
-	int num;
-	
-	num = *(int *)args;
-	pthread_mutex_lock(&test_philo);
-	printf(MAGENTA "Hello philo no. %i\n", num);
-	pthread_mutex_unlock(&test_philo);
-	return (NULL);
-}
-
 int main(int argc, char **argv)
 {
 	t_data	data;
@@ -52,16 +40,15 @@ int main(int argc, char **argv)
 	{
 		// to init the simulation;
 		// TODO: 1) Passing Argument; 
+		parse_input(argv, &data);
 		//2) Data Initiation // 
+		data_init(&data);
 		//3) start simulation 
 		// 4) clean data: the case would be all the philos full or one is died
-		init_simulation(argv, &data);
+		// init_simulation(argv, &data);
 		// passing the number of philo && other argument into the function
 	}
-		exit_error("Please check the number of arguments. 
-			Requirement: ./philo [number_of_philo] [time_to_die]
-			[time_to_eat] [time_to_sleep] 
-			[the_number_of_times_that_philo_must_eat(optional)]");
+		exit_error("Please check the number of arguments");
 	return (0);
 }
 // int main(int argc, char **argv)
