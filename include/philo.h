@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/23 22:25:33 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/25 16:36:37 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,16 @@
 // each philopher 
 typedef struct s_data t_data;
 
+typedef enum e_philo_status
+{
+	EAT,
+	SLEEP,
+	THINK,
+	TAKE_FIRST_FORK,
+	TAKE_SECOND_FORK,
+	DIED,
+}	t_philo_status;
+
 typedef enum e_opcode
 {
 	CREATE,
@@ -65,7 +75,8 @@ typedef struct s_philo
 	t_fork		*first_fork;
 	t_fork		*second_fork;
 	pthread_t	thread_id; //each philo is a thread	
-	// pthread_mutex_t	philo_mutex; 
+	pthread_mutex_t	philo_mutex; //monitoring mutex
+	pthread_mutex_t	write_mutex;
 	bool		thread_status; //philo thread create?
 	t_data		*data; // have accessing to all the data
 }	t_philo;
@@ -80,18 +91,24 @@ typedef struct s_data
 	bool	threads_ready;
 	long	start_simulation; //timestamp
 	bool	end_simulation; //on philo is dead || all philo is full (what would be a condition for this? --> limit number of meals)
+	pthread_mutex_t	end_mutex; // 
 	t_fork	*forks; //array to all the forks
 	t_philo	*philos; //array to all the philos, double pointers?
 }	t_data;
 
 //// fork is mulex in this context
 
-// Initiation && parsing agruments
+// Parsing agruments
 void	parse_input(char **argv, t_data *data);
-void	init_simulation(t_data *data);
+
+// Simulation
+void	write_status(t_philo *philo, t_philo_status status);
+void	start_simulation(t_data *data);
+void    eating(t_philo *philo);
+void    thinking(t_philo *philo);
 
 // Utility Function
-int	ft_atol(char const *str);
+long	ft_atol(char const *str);
 void	exit_error(const char *str);
 void	*malloc_handler(size_t bytes);
 void	mutex_error_handler(int status, t_opcode opcode);
@@ -100,6 +117,7 @@ void	thread_error_handler(int status, t_opcode opcode);
 void    thread_handler(pthread_t *th, void * (*foo)(void *), void *data, 
     t_opcode opcode);
 long	ft_gettime(void);
+void	ft_usleep(long consumed_time);
 
 // init
 void    data_init(t_data *data);

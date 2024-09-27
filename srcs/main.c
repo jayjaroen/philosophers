@@ -6,11 +6,11 @@
 /*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:58:05 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/23 15:57:31 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/24 10:40:32 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
 // The program takes four arguments
 // The fifth agrument is optional 
@@ -43,12 +43,16 @@ int main(int argc, char **argv)
 		parse_input(argv, &data);
 		//2) Data Initiation // 
 		data_init(&data);
-		//3) start simulation 
+		//3) start simulation
+		start_simulation(&data);
 		// 4) clean data: the case would be all the philos full or one is died
 		// init_simulation(argv, &data);
 		// passing the number of philo && other argument into the function
 	}
+	else
+	{
 		exit_error("Please check the number of arguments");
+	}
 	return (0);
 }
 // int main(int argc, char **argv)

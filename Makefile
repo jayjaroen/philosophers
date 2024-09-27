@@ -6,13 +6,14 @@
 #    By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/03 12:58:43 by jjaroens          #+#    #+#              #
-#    Updated: 2024/09/21 22:44:37 by jjaroens         ###   ########.fr        #
+#    Updated: 2024/09/25 14:54:45 by jjaroens         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = srcs/main.c srcs/utils.c srcs/parsing.c srcs/init.c
+SRCS = srcs/main.c srcs/utils.c srcs/utils_cont.c srcs/parsing.c srcs/init.c \
+		srcs/simulation.c srcs/action.c
 
 INCLUDE = include 
 

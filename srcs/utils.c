@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:08:42 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/22 20:04:31 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/25 15:07:27 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ void	*malloc_handler(size_t bytes)
 
 void	mutex_error_handler(int status, t_opcode opcode)
 {
-	if (status = 0)
+	if (status == 0)
 		return ;
 	else if (status == EINVAL && (opcode == LOCK || opcode == UNLOCK))
-		exit_error("The value specified by mutex is invalid.");
+		exit_error("The value specified by mutex is invalid. 0");
 	else if (status == EINVAL && opcode == INIT)
-		exit_error("The value specified by attr is invalid.");
+		exit_error("The value specified by attr is invalid. 1");
 	else if (status == EINVAL && opcode == DESTROY)
-		exit_error("The value specified by mutex is invalid.");
+		exit_error("The value specified by mutex is invalid. 2");
 	else if (status == EBUSY)
 		exit_error("Mutex is locked.");
 	else if (status == ENOMEM)
@@ -55,11 +55,11 @@ void	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode)
 {
 	if (opcode == LOCK)
 		mutex_error_handler(pthread_mutex_lock(mutex), opcode);
-	else if (opcode = UNLOCK)
-		mutex_error_handlder(pthread_mutex_unlock(mutex), opcode);
-	else if (opcode = INIT)
+	else if (opcode == UNLOCK)
+		mutex_error_handler(pthread_mutex_unlock(mutex), opcode);
+	else if (opcode == INIT)
 		mutex_error_handler(pthread_mutex_init(mutex, NULL), opcode);
-	else if (opcode = DESTROY)
+	else if (opcode == DESTROY)
 		mutex_error_handler(pthread_mutex_destroy(mutex), opcode);
 	else
 		exit_error("Wrong operation code for mutex");

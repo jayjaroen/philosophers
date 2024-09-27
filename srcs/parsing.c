@@ -6,11 +6,11 @@
 /*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 16:13:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/23 16:15:39 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/24 09:40:46 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
 // TODO: 1) change string to number
 //		2) make sure that the number > INT_MAX
@@ -28,8 +28,10 @@ static bool is_space(char c)
 	return ((c >= 9 && c <= 13) || c == 32);
 }
 // check if only allow characters for an argument
+
 static const char *check_valid(const char *str)
 {
+	// to rewrite this function
 	int	i;
 	int len;
 	const char *num;
@@ -44,14 +46,14 @@ static const char *check_valid(const char *str)
 		exit_error("Only positive value is allowed.");
 	if (!is_digit(str[i]))
 		exit_error("Only digits are allowed");
-	num = str[i];
+	num = &str[i];
 	while (is_digit(str[i]))
 	{
 		i++;
 		len++;
 	}
-	// if (len > 10)
-	// 	exit_error("The value is too big.");
+	if (len > 10)
+		exit_error("The value is too big.");
 	return (num);
 }
 
@@ -63,7 +65,7 @@ long	ft_atol(const char *str)
 	if (!str)
 		return (0);
 	// check if the argument is valid?
-	str = check_input(str);
+	str = check_valid(str);
 	res = 0;
 	i = 0;
 	while (str[i])
@@ -73,7 +75,7 @@ long	ft_atol(const char *str)
 		i++;
 	}
 	if (res > INT_MAX)
-		error_exit("The value exceeds INT_MAX");
+		exit_error("The value exceeds INT_MAX");
 	return (res);
 }
 

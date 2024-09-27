@@ -6,11 +6,11 @@
 /*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/23 22:16:02 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/24 16:05:06 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
 static void    fork_init(t_data *data)
 {
@@ -27,6 +27,7 @@ static void    fork_init(t_data *data)
 static void assigning_forks(t_philo *philo, t_fork *fork, int philo_pos)
 {
     // Potential Deadlock assigning the value?
+    // contested area?
     if (philo->id % 2 == 0) // even philo
     {
         philo->first_fork = &fork[philo_pos];
@@ -53,6 +54,7 @@ static void    philo_init(t_data *data)
         philo->is_full = false;
         philo->meal_counter = 0;
         philo->data = data; // point to the same set of data
+        mutex_handler(&philo->philo_mutex, INIT);
         assigning_forks(philo, data->forks, i);
     }    
 }
