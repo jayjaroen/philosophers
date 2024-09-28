@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_cont.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/25 14:51:56 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:07:28 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ long	ft_gettime(void)
 
 	if (gettimeofday(&tv, NULL))
 		exit_error("Failed to get time");
-	return ((tv.tv_sec * 1e3) + (tv.tv_usec/ 1e3));
+	// return ((tv.tv_sec * 1e3) + (tv.tv_usec/ 1e3));
+	return ((tv.tv_sec * 1000) + (tv.tv_usec/1000)); 
+	//The L suffix ensures that the multiplication is done using long integers.
 }
 
 void	write_status(t_philo *philo, t_philo_status status)
@@ -65,23 +67,29 @@ void	write_status(t_philo *philo, t_philo_status status)
 	// if (philo->is_full || simulation_finished(philo->data))
 		// TODO
 	// 	return ;
-	mutex_handler(&philo->write_mutex, LOCK);
+	mutex_handler(&philo->data->write_mutex, LOCK);
 	if (status == TAKE_FIRST_FORK)
-		printf(GREEN "%-5ld" CYAN "Philo no. %d has picked up a first fork" 
+		printf(GREEN "%-6ld" CYAN "Philo no. %d has picked up the first fork" 
 		RESET "\n", elapsed_time, philo->id);
 	else if (status == TAKE_SECOND_FORK)
-		printf(GREEN "%-5ld" CYAN "Philo no. %d has picked up a second fork"
+		printf(GREEN "%-6ld" CYAN "Philo no. %d has picked up the second fork"
 		RESET "\n",elapsed_time, philo->id);
 	else if (status == EAT)
-		printf(GREEN "%-5ld" CYAN "Philo no. %d starts eating" RESET "\n",
+		printf(GREEN "%-6ld" CYAN "Philo no. %d starts eating" RESET "\n",
 		elapsed_time, philo->id);
 	else if (status == SLEEP)
-		printf(GREEN "%-5ld" CYAN "Philo no. %d is sleeping" RESET "\n",
+		printf(GREEN "%-6ld" CYAN "Philo no. %d is sleeping" RESET "\n",
 		elapsed_time, philo->id);
 	else if (status == THINK)
-		printf(GREEN "%-5ld" CYAN "Philo no. %d is thinking" RESET "\n",
+		printf(GREEN "%-6ld" CYAN "Philo no. %d is thinking" RESET "\n",
 		elapsed_time, philo->id);
-	mutex_handler(&philo->write_mutex, UNLOCK);
+	else if (status == LET_GO_FIRST)
+		printf(GREEN "%-6ld" CYAN "Philo no. %d is putting down the first fork" RESET "\n",
+		elapsed_time, philo->id);
+	else if (status == LET_GO_SECOND)
+		printf(GREEN "%-6ld" CYAN "Philo no. %d is putting down the second fork" RESET "\n",
+		elapsed_time, philo->id);
+	mutex_handler(&philo->data->write_mutex, UNLOCK);
 }
 
 void	ft_usleep(long consumed_time)

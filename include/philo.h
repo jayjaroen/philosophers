@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/25 16:36:37 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:02:09 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sys/time.h> // gettimeofday
 # include <limits.h>
 # include <errno.h>
+# include <string.h>
 
 /**ANSI escape codes are special sequences of characters that start with the 
 	escape character (\033 or \x1b) followed by [ and end with a command.
@@ -46,6 +47,8 @@ typedef enum e_philo_status
 	THINK,
 	TAKE_FIRST_FORK,
 	TAKE_SECOND_FORK,
+	LET_GO_FIRST, //should I include this?
+	LET_GO_SECOND,
 	DIED,
 }	t_philo_status;
 
@@ -75,9 +78,9 @@ typedef struct s_philo
 	t_fork		*first_fork;
 	t_fork		*second_fork;
 	pthread_t	thread_id; //each philo is a thread	
-	pthread_mutex_t	philo_mutex; //monitoring mutex
-	pthread_mutex_t	write_mutex;
-	bool		thread_status; //philo thread create?
+	// pthread_mutex_t	philo_mutex; //monitoring mutex
+	// pthread_mutex_t	write_mutex; // change to data mutex //
+	bool		thread_status; //philo thread create? // all thread
 	t_data		*data; // have accessing to all the data
 }	t_philo;
 
@@ -91,6 +94,10 @@ typedef struct s_data
 	bool	threads_ready;
 	long	start_simulation; //timestamp
 	bool	end_simulation; //on philo is dead || all philo is full (what would be a condition for this? --> limit number of meals)
+	pthread_t	monitor;
+	pthread_mutex_t	philo_mutex;
+	pthread_mutex_t	write_mutex;
+	pthread_mutex_t	monitor_mutex;
 	pthread_mutex_t	end_mutex; // 
 	t_fork	*forks; //array to all the forks
 	t_philo	*philos; //array to all the philos, double pointers?
@@ -106,6 +113,7 @@ void	write_status(t_philo *philo, t_philo_status status);
 void	start_simulation(t_data *data);
 void    eating(t_philo *philo);
 void    thinking(t_philo *philo);
+void	sleeping(t_philo *philo);
 
 // Utility Function
 long	ft_atol(char const *str);

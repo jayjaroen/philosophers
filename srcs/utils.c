@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:08:42 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/25 15:07:27 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 11:50:00 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	exit_error(const char *str)
 {
 	printf(RED"%s" RESET "\n", str);
 	exit(EXIT_FAILURE);
+	// Free philo && fork if exit, import data//
 }
 
 void	*malloc_handler(size_t bytes)

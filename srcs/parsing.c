@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 16:13:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/24 09:40:46 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 13:49:07 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ long	ft_atol(const char *str)
 void	parse_input(char **argv, t_data *data)
 {
 	data->num_philo = (int)ft_atol(argv[1]);
-	data->time_to_die = ft_atol(argv[2]) * 1e3;
-	data->time_to_eat = ft_atol(argv[3]) * 1e3;
-	data->time_to_sleep = ft_atol(argv[4]) * 1e3;
+	data->time_to_die = ft_atol(argv[2]);
+	data->time_to_eat = ft_atol(argv[3]);
+	data->time_to_sleep = ft_atol(argv[4]); 
 	// limit for each activity timestamp
 	if (argv[5])
 		data->limit_meals = (int)ft_atol(argv[5]);

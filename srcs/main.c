@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:58:05 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/24 10:40:32 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 15:00:34 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int main(int argc, char **argv)
 {
 	t_data	data;
 	
+	memset(&data, 0, sizeof(t_data));
+	// set zero data;
 	if (argc == 5 || argc == 6)
 	{
 		// to init the simulation;

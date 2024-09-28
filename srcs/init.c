@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/24 16:05:06 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/09/28 16:18:19 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ static void    philo_init(t_data *data)
     t_philo *philo;
 
     i = -1;
-    while (++i < data->num_philo + 1)
+	philo = data->philos;
+    while (++i < data->num_philo)
     {
-        philo = data->philos + i;//array position of philo
-        philo->id = i + 1;
-        philo->is_full = false;
-        philo->meal_counter = 0;
-        philo->data = data; // point to the same set of data
-        mutex_handler(&philo->philo_mutex, INIT);
+        philo[i].id = i + 1;
+        philo[i].is_full = false;
+        philo[i].meal_counter = 0;
+        philo[i].data = data; // point to the same set of data
+        // mutex_handler(&philo->philo_mutex, INIT);
         assigning_forks(philo, data->forks, i);
     }    
 }
@@ -63,8 +63,10 @@ void    data_init(t_data *data)
 {
     data->end_simulation = false;
     data->threads_ready = false;
-    data->philos = malloc_handler(sizeof(t_philo) * data->num_philo);
-    data->forks = malloc_handler(sizeof(t_fork) * data->num_philo);
+    data->philos = (t_philo *) malloc_handler(sizeof(t_philo) * data->num_philo);
+    data->forks = (t_fork *) malloc_handler(sizeof(t_fork) * data->num_philo);
+	mutex_handler(&data->write_mutex, INIT);
+	mutex_handler(&data->philo_mutex, INIT);
     philo_init(data);
     fork_init(data);
     
