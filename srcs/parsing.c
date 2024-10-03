@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 16:13:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/28 13:49:07 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/03 16:10:55 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 // TODO: 1) change string to number
 //		2) make sure that the number > INT_MAX
 //		3) timestamps > 60 ms (why need to be more than 60 ms?)
+// To rewrte this session - check digit
 
 // to rewrite the parsing functions
 
@@ -90,4 +91,6 @@ void	parse_input(char **argv, t_data *data)
 		data->limit_meals = (int)ft_atol(argv[5]);
 	else
 		data->limit_meals = -1;
+	if (data->limit_meals == 0)
+		exit_error("limit meals == 0. No simulation");//clean data after?
 }

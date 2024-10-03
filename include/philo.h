@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/28 16:02:09 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/03 16:16:32 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,11 @@ typedef enum e_opcode
 	DESTROY,
 } t_opcode;
 
-typedef struct s_fork // fork is a mutex
-{
-	pthread_mutex_t	fork;
-	int				fork_id;
-}	t_fork;
+// typedef struct s_fork // fork is a mutex
+// {
+// 	pthread_mutex_t	fork;
+// 	int				fork_id;
+// }	t_fork;
 
 typedef struct s_philo
 {
@@ -75,12 +75,12 @@ typedef struct s_philo
 	long		meal_counter; // if all reach limit meal then end the simulation
 	long		last_meal_time;
 	bool		is_full;
-	t_fork		*first_fork;
-	t_fork		*second_fork;
+	pthread_mutex_t	*first_fork;
+	pthread_mutex_t	*second_fork;
 	pthread_t	thread_id; //each philo is a thread	
 	// pthread_mutex_t	philo_mutex; //monitoring mutex
 	// pthread_mutex_t	write_mutex; // change to data mutex //
-	bool		thread_status; //philo thread create? // all thread
+	// bool		thread_status; //philo thread create? // all thread
 	t_data		*data; // have accessing to all the data
 }	t_philo;
 
@@ -91,15 +91,16 @@ typedef struct s_data
 	long	time_to_eat;
 	long	time_to_sleep;
 	int		limit_meals; //optional the fifth agrument
-	bool	threads_ready;
+	// bool	threads_ready; // maybe doesn't need this
 	long	start_simulation; //timestamp
 	bool	end_simulation; //on philo is dead || all philo is full (what would be a condition for this? --> limit number of meals)
 	pthread_t	monitor;
 	pthread_mutex_t	philo_mutex;
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	monitor_mutex;
-	pthread_mutex_t	end_mutex; // 
-	t_fork	*forks; //array to all the forks
+	pthread_mutex_t	end_mutex; //
+	pthread_mutex_t *forks;
+	// t_fork	*forks; //array to all the forks
 	t_philo	*philos; //array to all the philos, double pointers?
 }	t_data;
 

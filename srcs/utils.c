@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:08:42 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/28 11:50:00 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:01:02 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 void	exit_error(const char *str)
 {
 	printf(RED"%s" RESET "\n", str);
+	// calling free function
+	// free fork, free philo
 	exit(EXIT_FAILURE);
 	// Free philo && fork if exit, import data//
 }
@@ -37,11 +39,11 @@ void	mutex_error_handler(int status, t_opcode opcode)
 	if (status == 0)
 		return ;
 	else if (status == EINVAL && (opcode == LOCK || opcode == UNLOCK))
-		exit_error("The value specified by mutex is invalid. 0");
+		exit_error("The value specified by mutex is invalid.");
 	else if (status == EINVAL && opcode == INIT)
-		exit_error("The value specified by attr is invalid. 1");
+		exit_error("The value specified by attr is invalid.");
 	else if (status == EINVAL && opcode == DESTROY)
-		exit_error("The value specified by mutex is invalid. 2");
+		exit_error("The value specified by mutex is invalid.");
 	else if (status == EBUSY)
 		exit_error("Mutex is locked.");
 	else if (status == ENOMEM)
@@ -65,4 +67,3 @@ void	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode)
 	else
 		exit_error("Wrong operation code for mutex");
 }
-// pthread handling //

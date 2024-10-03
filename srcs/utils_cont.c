@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/28 16:07:28 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:59:21 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,17 @@ long	ft_gettime(void)
 
 void	write_status(t_philo *philo, t_philo_status status)
 {
+	t_data	*data;
 	long	elapsed_time;
 	// should also use this to update in the data struct?
 	// the time should take less than allowed time - put it in the function
 	// of each activtiy
-	elapsed_time = ft_gettime() - philo->data->start_simulation;
 	// if (philo->is_full || simulation_finished(philo->data))
 		// TODO
 	// 	return ;
-	mutex_handler(&philo->data->write_mutex, LOCK);
+	data = philo->data;
+	mutex_handler(&data->write_mutex, LOCK);
+	elapsed_time = ft_gettime() - philo->data->start_simulation;
 	if (status == TAKE_FIRST_FORK)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d has picked up the first fork" 
 		RESET "\n", elapsed_time, philo->id);
@@ -89,7 +91,7 @@ void	write_status(t_philo *philo, t_philo_status status)
 	else if (status == LET_GO_SECOND)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d is putting down the second fork" RESET "\n",
 		elapsed_time, philo->id);
-	mutex_handler(&philo->data->write_mutex, UNLOCK);
+	mutex_handler(&data->write_mutex, UNLOCK);
 }
 
 void	ft_usleep(long consumed_time)
