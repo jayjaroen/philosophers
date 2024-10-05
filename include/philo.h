@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 16:16:32 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:26:36 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ typedef struct s_data
 	pthread_t	monitor;
 	pthread_mutex_t	philo_mutex;
 	pthread_mutex_t	write_mutex;
+	pthread_mutex_t meal_mutex;
 	pthread_mutex_t	monitor_mutex;
 	pthread_mutex_t	end_mutex; //
 	pthread_mutex_t *forks;

@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 16:16:42 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 15:36:32 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,13 @@ static void	philo_init(t_data *data)
 		philo[i].id = i + 1;
 		philo[i].is_full = false;
 		philo[i].meal_counter = 0;
+		philo[i].last_meal_time = 0;
 		philo[i].data = data;
 		philo[i].first_fork = NULL;
 		philo[i].second_fork = NULL;
 		assigning_forks(&philo[i], data);
-		printf("philo no: %d first fork addr: %p\n", philo[i].id, philo[i].first_fork);
-		printf("philo no: %d second fork addr: %p\n", philo[i].id, philo[i].second_fork);
+		// printf("philo no: %d first fork addr: %p\n", philo[i].id, philo[i].first_fork);
+		// printf("philo no: %d second fork addr: %p\n", philo[i].id, philo[i].second_fork);
 	}
 }
 
@@ -73,11 +74,13 @@ void    data_init(t_data *data)
 	data->end_simulation = false;
     // data->threads_ready = false;
     data->philos = (t_philo *) malloc_handler(sizeof(t_philo) * data->num_philo);
+	memset(data->philos, 0, sizeof(t_philo) * data->num_philo);//bytezero
     data->forks = malloc_handler(sizeof(pthread_mutex_t) * data->num_philo);
     fork_mutex_init(data);
     philo_init(data);
 	mutex_handler(&data->write_mutex, INIT);
 	mutex_handler(&data->philo_mutex, INIT);
 	mutex_handler(&data->monitor_mutex, INIT);
+	mutex_handler(&data->meal_mutex, INIT);
 	mutex_handler(&data->end_mutex, INIT);
 }

@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:58:05 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/09/28 15:00:34 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 14:21:27 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 	
 	memset(&data, 0, sizeof(t_data));
 	// set zero data;
+	printf(RED "addr before %p" RESET "\n", &data);
 	if (argc == 5 || argc == 6)
 	{
 		// to init the simulation;

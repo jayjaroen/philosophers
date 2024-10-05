@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 15:23:36 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 16:49:03 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:46:23 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,56 +17,86 @@
     3. every philo start simulaneously
     4. Join thread
 */
-// static bool	simulation_finished(t_data *data)
-// {
-	
-// }
 static bool	are_all_full(t_data *data)
 {
 	int	i;
-	t_philo *philo;
+	t_philo	*philo;
 	
 	i = -1;
 	philo = data->philos;
+	printf("Inside are_all_full function\n");
+	printf("no philo: %d \n", data->num_philo);
+	printf(RED "are all full add: %p" RESET "\n", data);
 	while (++i < data->num_philo)
 	{
+		printf(RED "philo no %d %d" RESET "\n", philo[i].id, philo[i].is_full);
 		if (!philo[i].is_full)
 			return (false);
 		i++;
 	}
 	return (true);
 }
+static bool is_dead(t_data *data)
+{
+	int	i;
+	long	current;
+	t_philo	*philo;
+	
+	i = -1;
+	philo = data->philos;
+	printf("the address of data in is_dead: %p\n", data);
+	while (++i < data->num_philo)
+	{
+		current = ft_gettime();
+		mutex_handler(&data->meal_mutex, LOCK);
+		if (philo[i].last_meal_time == 0)//set the start time of simulation
+			philo[i].last_meal_time = data->start_simulation;
+		printf(RED "current time: %ld" RESET "\n", current);
+		printf(YELLOW "Time to die: %ld" RESET "\n", data->time_to_die);
+		printf(CYAN"current - philo_last_meal_time = %ld" RESET "\n",current - philo[i].last_meal_time);
+		printf(CYAN "last meal time is: %ld" RESET "\n", philo[i].last_meal_time);
+		if ((current - philo[i].last_meal_time) > data->time_to_die)
+		{
+			mutex_handler(&data->meal_mutex, UNLOCK);
+			mutex_handler(&data->end_mutex, LOCK);
+			data->end_simulation = true;
+			mutex_handler(&data->end_mutex, UNLOCK);
+			write_status(philo, DIED);
+			// printf(RED "philo no: %d died" RESET "\n", philo[i].id);
+			return (true);
+		}
+		mutex_handler(&data->meal_mutex, UNLOCK);
+	}
+	return (false);
+}
+
 static void	*thread_monitor(void *args)
 {
 	t_data *data;
-	t_philo *philo;
-	long	current;
-	int	i;
 
 	data = (t_data *)args;
-	philo = data->philos;
-	i = -1;
-	while (++i < data->num_philo)// should be while (true) -->check constantly
+	printf(YELLOW "I am in the thread monitoring loop" RESET "\n");
+	while (true)
 	{
-		current = ft_gettime();
-		if ((current - philo[i].last_meal_time) > data->time_to_die)//check if philo died
+		printf(RED "I am here" RESET "\n");
+		if (are_all_full(data))
 		{
-			mutex_handler(&data->monitor_mutex, LOCK);
-			printf(RED "the time is: %ld" RESET "\n", current - philo[i].last_meal_time);
-			printf(RED "philo no: %d died" RESET "\n", philo[i].id);
-			data->end_simulation = true;
-			mutex_handler(&data->monitor_mutex, UNLOCK);
-			break ;
-		}
-		if (are_all_full)
-		{
-			mutex_handler(&data->monitor_mutex, LOCK);
+			mutex_handler(&data->end_mutex, LOCK);
 			printf(YELLOW "ALL full" RESET "\n");
 			data->end_simulation = true;
-			mutex_handler(&data->monitor_mutex, UNLOCK);
-			break ;
+			mutex_handler(&data->end_mutex, UNLOCK);
+			return (NULL);
+		}
+		if (is_dead(data))
+		{
+			// To free data
+			// Destroy thread --> no need to join later?
+			// finished before joining the program
+			// should avoid this
+			return (NULL);
 		}
 	}
+	printf(YELLOW "at the end of function thread monitor" RESET "\n");
 	return (NULL);
 }
 
@@ -77,23 +107,23 @@ static void	*philo_simulation(void *args)
 	
 	philo = (t_philo*)args;
 	data = philo->data;
-    // printf(CYAN "am I back here" RESET "\n");
-	// while (!philo->data->end_simulation)
+	if (philo->id % 2 == 0)
+		usleep(100);
 	while (!data->end_simulation)
 	{
-		//EAT ( full?)
-		if (philo->is_full)
-			break ;
 		eating(philo);
+		if (philo->is_full)//each thread full
+			break ;
+		// check is_full, end_simulation
+		if (data->end_simulation)
+		{
+			//free data
+			return (NULL);
+		}
 		sleeping(philo);
 		thinking(philo);
-		
-		//sleep
-    //to sleep
-		//think (while waiting for fork can put into thinking?)
-		// to check if all philo full == end simulation
 	}
-    return (NULL);
+	return (NULL);
 }
 
 void	start_simulation(t_data *data)
@@ -109,16 +139,18 @@ void	start_simulation(t_data *data)
 	data->start_simulation = ft_gettime();
 	printf(CYAN "the time is: %ld" RESET "\n", data->start_simulation);
 	printf("the num of philo: %d\n", data->num_philo);
-	thread_handler(&data->monitor, &thread_monitor, &data, CREATE);
+	thread_handler(&data->monitor, &thread_monitor, data, CREATE);//simulatenous
 	while (++i < data->num_philo)
 	{
 		thread_handler(&data->philos[i].thread_id, &philo_simulation, &data->philos[i], CREATE);
 	}
-	// Joining thread // starting to join at thread 0 first
+	thread_handler(&data->monitor, NULL, NULL, JOIN);
     i = -1;
     while (++i < data->num_philo)
 	{
         thread_handler(&data->philos[i].thread_id, NULL, NULL, JOIN);
 	}
+	// TODO: write function that end simulation
 	free(data->philos);
+	// Calling free function
 }

@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:13:54 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 16:33:51 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:29:24 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ void	eating(t_philo *philo)
 	write_status(philo, TAKE_FIRST_FORK);
 	mutex_handler(philo->second_fork, LOCK);
 	write_status(philo, TAKE_SECOND_FORK);
-	mutex_handler(&data->philo_mutex, LOCK);
-	philo->last_meal_time = ft_gettime();
 	write_status(philo, EAT);
 	ft_usleep(philo->data->time_to_eat);
+	mutex_handler(&data->meal_mutex, LOCK);
+	philo->last_meal_time = ft_gettime();
 	philo->meal_counter++;
-	printf(MAGENTA"Philo %d : meal counter: %ld" RESET "\n",philo->id, philo->meal_counter);
-	mutex_handler(&data->philo_mutex, UNLOCK);
-	if (philo->meal_counter == data->limit_meals)
+	mutex_handler(&data->meal_mutex, UNLOCK);
+	printf(MAGENTA"Philo %d meal counter: %ld" RESET "\n",philo->id, philo->meal_counter);
+	if (philo->meal_counter == data->limit_meals && data->limit_meals > 0)
 	{
 		mutex_handler(&data->philo_mutex, LOCK);
 		philo->is_full = true;
@@ -42,8 +42,7 @@ void	eating(t_philo *philo)
 	mutex_handler(philo->first_fork, UNLOCK);
 	write_status(philo, LET_GO_FIRST); // to delete debug
 	mutex_handler(philo->second_fork, UNLOCK);
-	write_status(philo, LET_GO_SECOND);
-	// die monitor the process
+	write_status(philo, LET_GO_SECOND);// to delete
 }
 
 void    thinking(t_philo *philo)

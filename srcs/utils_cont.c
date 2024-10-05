@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 15:59:21 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:38:58 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,10 @@ void	write_status(t_philo *philo, t_philo_status status)
 	else if (status == LET_GO_SECOND)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d is putting down the second fork" RESET "\n",
 		elapsed_time, philo->id);
+	else if (status == DIED)
+		printf(GREEN "%-6ld" CYAN "Philo no. %d just died" RESET "\n",
+		elapsed_time, philo->id);
+		// end the program here?
 	mutex_handler(&data->write_mutex, UNLOCK);
 }
 
