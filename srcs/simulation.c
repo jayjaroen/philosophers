@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 15:23:36 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/05 16:46:23 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/11 15:37:37 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,14 @@ static bool	are_all_full(t_data *data)
 	
 	i = -1;
 	philo = data->philos;
-	printf("Inside are_all_full function\n");
-	printf("no philo: %d \n", data->num_philo);
+	printf("----------Inside are_all_full function------------\n");
+	// printf("no philo: %d \n", data->num_philo);
 	printf(RED "are all full add: %p" RESET "\n", data);
 	while (++i < data->num_philo)
 	{
-		printf(RED "philo no %d %d" RESET "\n", philo[i].id, philo[i].is_full);
+		// printf(RED "philo no %d %d" RESET "\n", philo[i].id, philo[i].is_full);
 		if (!philo[i].is_full)
 			return (false);
-		i++;
 	}
 	return (true);
 }
@@ -44,6 +43,7 @@ static bool is_dead(t_data *data)
 	
 	i = -1;
 	philo = data->philos;
+	printf("---------Inside is_dead function----------------\n");
 	printf("the address of data in is_dead: %p\n", data);
 	while (++i < data->num_philo)
 	{
@@ -111,17 +111,19 @@ static void	*philo_simulation(void *args)
 		usleep(100);
 	while (!data->end_simulation)
 	{
-		eating(philo);
-		if (philo->is_full)//each thread full
-			break ;
-		// check is_full, end_simulation
-		if (data->end_simulation)
-		{
-			//free data
+		printf("----------- Inside philo_simulation loop-----------\n");
+		if (philo->is_full || data->end_simulation)//each thread full
 			return (NULL);
-		}
+		eating(philo);
+		// check is_full, end_simulation
+		// if (data->end_simulation)
+		// {
+		// 	//free data
+		// 	return (NULL);
+		// }
 		sleeping(philo);
 		thinking(philo);
+		printf(YELLOW "Hi I am at the end of the loop" RESET "\n");
 	}
 	return (NULL);
 }
@@ -140,10 +142,16 @@ void	start_simulation(t_data *data)
 	printf(CYAN "the time is: %ld" RESET "\n", data->start_simulation);
 	printf("the num of philo: %d\n", data->num_philo);
 	thread_handler(&data->monitor, &thread_monitor, data, CREATE);//simulatenous
+	if (pthread_create(&data->monitor, NULL, thread_monitor, data))
+	{
+		printf(RED "Failed to create thread" RESET "\n");
+		return ;
+	}
 	while (++i < data->num_philo)
 	{
 		thread_handler(&data->philos[i].thread_id, &philo_simulation, &data->philos[i], CREATE);
 	}
+	printf("------------- all threads created-------------\n");
 	thread_handler(&data->monitor, NULL, NULL, JOIN);
     i = -1;
     while (++i < data->num_philo)
@@ -151,6 +159,8 @@ void	start_simulation(t_data *data)
         thread_handler(&data->philos[i].thread_id, NULL, NULL, JOIN);
 	}
 	// TODO: write function that end simulation
-	free(data->philos);
+	// clean functions
+	// Normal retrun free at main function
+	// free(data->philos);
 	// Calling free function
 }

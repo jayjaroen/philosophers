@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/05 15:36:32 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/11 11:18:47 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void    data_init(t_data *data)
 	data->end_simulation = false;
     // data->threads_ready = false;
     data->philos = (t_philo *) malloc_handler(sizeof(t_philo) * data->num_philo);
-	memset(data->philos, 0, sizeof(t_philo) * data->num_philo);//bytezero
+	// memset(data->philos, 0, sizeof(t_philo) * data->num_philo);//bytezero
     data->forks = malloc_handler(sizeof(pthread_mutex_t) * data->num_philo);
     fork_mutex_init(data);
     philo_init(data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   action.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:13:54 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/05 16:29:24 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/11 14:55:50 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	eating(t_philo *philo)
 	philo->meal_counter++;
 	mutex_handler(&data->meal_mutex, UNLOCK);
 	printf(MAGENTA"Philo %d meal counter: %ld" RESET "\n",philo->id, philo->meal_counter);
-	if (philo->meal_counter == data->limit_meals && data->limit_meals > 0)
+	if (philo->meal_counter == data->limit_meals && (data->limit_meals > 0))
 	{
 		mutex_handler(&data->philo_mutex, LOCK);
 		philo->is_full = true;
@@ -47,11 +47,20 @@ void	eating(t_philo *philo)
 
 void    thinking(t_philo *philo)
 {
+	t_data *data;
+	
+	data = philo->data;
 	write_status(philo, THINK);
+	if (data->num_philo % 2 == 1 && data->time_to_eat >= data->time_to_sleep)
+		ft_usleep(data->time_to_eat * 2 - data->time_to_sleep);
+	
 }
 
 void	sleeping(t_philo *philo)
 {
+	t_data *data;
+
+	data = philo->data;
 	write_status(philo, SLEEP);
-	ft_usleep(philo->data->time_to_sleep);	
+	ft_usleep(data->time_to_sleep);	
 }
