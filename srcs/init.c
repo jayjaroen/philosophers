@@ -3,25 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/11 11:18:47 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:12:09 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-static void	fork_mutex_init(t_data *data)
+static bool	fork_mutex_init(t_data *data)
 {
-	int i;
+	int	i;
 
-	i = 0;
-	while (i < data->num_philo)
+	i = -1;
+	while (++i < data->num_philo)
 	{
-		mutex_handler(&data->forks[i], INIT);
-		i++;
+		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+		{
+			printf(RED "Failed to init fork mutex" RESET "\n");
+			return (false);
+		}
 	}
+	printf("hi am here at the end of fork mutex\n");
+	return (true);
 }
 
 static void assigning_forks(t_philo *philo, t_data *data)
@@ -48,7 +53,7 @@ static void assigning_forks(t_philo *philo, t_data *data)
 
 static void	philo_init(t_data *data)
 {
-	int i;
+	int	i;
 	t_philo *philo;
 
 	i = -1;
@@ -67,20 +72,45 @@ static void	philo_init(t_data *data)
 		// printf("philo no: %d second fork addr: %p\n", philo[i].id, philo[i].second_fork);
 	}
 }
-
-void    data_init(t_data *data)
+static bool program_mutex(t_data *data)
 {
-    data->start_simulation = 0;
+	if (pthread_mutex_init(&data->write_mutex, NULL)
+		|| pthread_mutex_init(&data->philo_mutex, NULL)
+		|| pthread_mutex_init(&data->meal_mutex, NULL)
+		|| pthread_mutex_init(&data->monitor_mutex, NULL)
+		|| pthread_mutex_init(&data->end_mutex, NULL))
+	{
+		printf(RED "Failed to init program mutex" RESET "\n");
+		return (false);
+	}
+	return (true);
+}
+
+bool	data_init(t_data *data)
+{
+	data->start_simulation = 0;
 	data->end_simulation = false;
-    // data->threads_ready = false;
-    data->philos = (t_philo *) malloc_handler(sizeof(t_philo) * data->num_philo);
-	// memset(data->philos, 0, sizeof(t_philo) * data->num_philo);//bytezero
-    data->forks = malloc_handler(sizeof(pthread_mutex_t) * data->num_philo);
-    fork_mutex_init(data);
-    philo_init(data);
-	mutex_handler(&data->write_mutex, INIT);
-	mutex_handler(&data->philo_mutex, INIT);
-	mutex_handler(&data->monitor_mutex, INIT);
-	mutex_handler(&data->meal_mutex, INIT);
-	mutex_handler(&data->end_mutex, INIT);
+	data->philos = malloc(sizeof(t_philo) * data->num_philo);
+	if (!data->philos)
+	{
+		printf(RED "Failed to malloc philos" RESET "\n");
+		return (false);
+	}
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philo);
+	if (!data->forks)
+	{
+		printf(RED "Failed to malloc forks" RESET "\n");
+		return (false);
+	}
+	if (!fork_mutex_init(data))
+		return (false);
+	philo_init(data);
+	if (!program_mutex(data))
+		return (false);
+	// mutex_handler(&data->write_mutex, INIT);
+	// mutex_handler(&data->philo_mutex, INIT);
+	// mutex_handler(&data->monitor_mutex, INIT);
+	// mutex_handler(&data->meal_mutex, INIT);
+	// mutex_handler(&data->end_mutex, INIT);
+	return (true);
 }

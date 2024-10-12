@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   action.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:13:54 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/11 14:55:50 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:27:10 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ void	eating(t_philo *philo)
 
 void    thinking(t_philo *philo)
 {
-	t_data *data;
+	// t_data *data;
 	
-	data = philo->data;
+	// data = philo->data;
 	write_status(philo, THINK);
-	if (data->num_philo % 2 == 1 && data->time_to_eat >= data->time_to_sleep)
-		ft_usleep(data->time_to_eat * 2 - data->time_to_sleep);
-	
+	ft_usleep(50);
+	// if (data->num_philo % 2 == 1 && data->time_to_eat >= data->time_to_sleep)
+	// 	ft_usleep(data->time_to_eat * 2 - data->time_to_sleep);	
 }
 
 void	sleeping(t_philo *philo)
@@ -63,4 +63,10 @@ void	sleeping(t_philo *philo)
 	data = philo->data;
 	write_status(philo, SLEEP);
 	ft_usleep(data->time_to_sleep);	
+}
+void	one_philo(t_data *data, t_philo *philo)
+{
+	write_status(philo, TAKE_FIRST_FORK);
+	ft_usleep(data->time_to_die);
+	write_status(philo, DIED);
 }

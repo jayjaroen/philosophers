@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_cont.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/11 14:43:47 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:30:04 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,10 @@ void	write_status(t_philo *philo, t_philo_status status)
 {
 	t_data	*data;
 	long	elapsed_time;
-	// should also use this to update in the data struct?
-	// the time should take less than allowed time - put it in the function
-	// of each activtiy
-	// if (philo->is_full || simulation_finished(philo->data))
-		// TODO
-	// 	return ;
+	
 	data = philo->data;
 	mutex_handler(&data->write_mutex, LOCK);
-	elapsed_time = ft_gettime() - philo->data->start_simulation;
+	elapsed_time = ft_gettime() - data->start_simulation;
 	if (status == TAKE_FIRST_FORK)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d has taken a fork" 
 		RESET "\n", elapsed_time, philo->id);
@@ -77,7 +72,7 @@ void	write_status(t_philo *philo, t_philo_status status)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d has taken a fork"
 		RESET "\n",elapsed_time, philo->id);
 	else if (status == EAT)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d starts eating" RESET "\n",
+		printf(GREEN "%-6ld" CYAN "Philo no. %d is eating" RESET "\n",
 		elapsed_time, philo->id);
 	else if (status == SLEEP)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d is sleeping" RESET "\n",
@@ -92,7 +87,7 @@ void	write_status(t_philo *philo, t_philo_status status)
 		printf(GREEN "%-6ld" CYAN "Philo no. %d is putting down the second fork" RESET "\n",
 		elapsed_time, philo->id);
 	else if (status == DIED)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d just died" RESET "\n",
+		printf(GREEN "%-6ld" CYAN "Philo no. %d died" RESET "\n",
 		elapsed_time, philo->id);
 		// end the program here?
 	mutex_handler(&data->write_mutex, UNLOCK);

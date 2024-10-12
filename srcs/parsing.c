@@ -6,18 +6,11 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 16:13:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/03 16:10:55 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:54:14 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
-
-// TODO: 1) change string to number
-//		2) make sure that the number > INT_MAX
-//		3) timestamps > 60 ms (why need to be more than 60 ms?)
-// To rewrte this session - check digit
-
-// to rewrite the parsing functions
 
 static bool is_digit(char c)
 {
@@ -28,45 +21,41 @@ static bool is_space(char c)
 {
 	return ((c >= 9 && c <= 13) || c == 32);
 }
-// check if only allow characters for an argument
 
 static const char *check_valid(const char *str)
 {
-	// to rewrite this function
 	int	i;
-	int len;
 	const char *num;
 	
 	i = 0;
-	len = 0;
 	while (is_space(str[i]))
 		i++;
 	if (str[i] == '+')
 		i++;
 	if (str[i] == '-')
-		exit_error("Only positive value is allowed.");
-	if (!is_digit(str[i]))
-		exit_error("Only digits are allowed");
-	num = &str[i];
-	while (is_digit(str[i]))
 	{
-		i++;
-		len++;
+		printf(RED "Only positive value is allowed." RESET "\n");
+		return (NULL);
 	}
-	if (len > 10)
-		exit_error("The value is too big.");
+	if (!is_digit(str[i]))
+	{
+		printf(RED "Only digit is allowed." RESET "\n");
+		return (NULL);
+	}
+	num = &str[i];
 	return (num);
 }
 
-long	ft_atol(const char *str)
+static long	ft_atol(const char *str)
 {
 	int i;
 	long res;
 
 	if (!str)
 		return (0);
-	// check if the argument is valid?
 	str = check_valid(str);
+	if (str == NULL)
+		return (-1);
 	res = 0;
 	i = 0;
 	while (str[i])
@@ -76,21 +65,30 @@ long	ft_atol(const char *str)
 		i++;
 	}
 	if (res > INT_MAX)
-		exit_error("The value exceeds INT_MAX");
+	{
+		printf(RED "The value exceeds INI_MAX" RESET "\n");
+		return (-1);
+	}
 	return (res);
 }
 
-void	parse_input(char **argv, t_data *data)
+bool	parse_input(char **argv, t_data *data)
 {
 	data->num_philo = (int)ft_atol(argv[1]);
 	data->time_to_die = ft_atol(argv[2]);
 	data->time_to_eat = ft_atol(argv[3]);
 	data->time_to_sleep = ft_atol(argv[4]); 
-	// limit for each activity timestamp
+	if (data->num_philo == -1 || data->time_to_die == -1 ||
+		data->time_to_eat == -1 || data->time_to_sleep == -1)
+		return (false);
 	if (argv[5])
 		data->limit_meals = (int)ft_atol(argv[5]);
 	else
 		data->limit_meals = -1;
 	if (data->limit_meals == 0)
-		exit_error("limit meals == 0. No simulation");//clean data after?
+	{
+		printf(RED "limit meal == 0. No simulation" RESET "\n");
+		return (false);
+	}
+	return (true);
 }

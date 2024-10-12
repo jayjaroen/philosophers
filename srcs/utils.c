@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:08:42 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/11 11:03:50 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 14:37:23 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ void	exit_error(const char *str)
 	// Free philo && fork if exit, import data//
 }
 
-void	*malloc_handler(size_t bytes)
-{
-	void	*res;
+// void	*malloc_handler(size_t bytes)
+// {
+// 	void	*res;
 	
-	res = malloc(bytes);
-	if (!res)
-		exit_error("Failed to malloc");
-	return (res);
-}
+// 	res = malloc(bytes);
+// 	if (!res)
+// 		exit_error("Failed to malloc");
+// 	return (res);
+// }
 
 void	mutex_error_handler(int status, t_opcode opcode)
 {

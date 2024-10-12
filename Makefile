@@ -6,14 +6,14 @@
 #    By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/03 12:58:43 by jjaroens          #+#    #+#              #
-#    Updated: 2024/09/28 16:11:53 by jjaroens         ###   ########.fr        #
+#    Updated: 2024/10/12 13:37:49 by jjaroens         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 SRCS = srcs/main.c srcs/utils.c srcs/utils_cont.c srcs/parsing.c srcs/init.c \
-		srcs/simulation.c srcs/action.c
+		srcs/simulation.c srcs/action.c srcs/clean_data.c
 
 INCLUDE = include 
 
@@ -38,6 +38,8 @@ clean:
 
 fclean: clean
 	rm -f philo
+
+re: fclean all
 
 norminette:
 	@norminette -R CheckForbiddenSourceHeader srcs/*.c

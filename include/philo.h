@@ -6,12 +6,13 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/05 13:26:36 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:51:17 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO
 # define PHILO
+
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -47,7 +48,7 @@ typedef enum e_philo_status
 	THINK,
 	TAKE_FIRST_FORK,
 	TAKE_SECOND_FORK,
-	LET_GO_FIRST, //should I include this?
+	LET_GO_FIRST, //TO DELETE should I include this?
 	LET_GO_SECOND,
 	DIED,
 }	t_philo_status;
@@ -63,12 +64,6 @@ typedef enum e_opcode
 	DESTROY,
 } t_opcode;
 
-// typedef struct s_fork // fork is a mutex
-// {
-// 	pthread_mutex_t	fork;
-// 	int				fork_id;
-// }	t_fork;
-
 typedef struct s_philo
 {
 	int			id;
@@ -78,20 +73,16 @@ typedef struct s_philo
 	pthread_mutex_t	*first_fork;
 	pthread_mutex_t	*second_fork;
 	pthread_t	thread_id; //each philo is a thread	
-	// pthread_mutex_t	philo_mutex; //monitoring mutex
-	// pthread_mutex_t	write_mutex; // change to data mutex //
-	// bool		thread_status; //philo thread create? // all thread
 	t_data		*data; // have accessing to all the data
 }	t_philo;
 
 typedef struct s_data
 {
-	int		num_philo;
+	int	num_philo;
 	long	time_to_die; //shouldn't this be in the philo struct? 
 	long	time_to_eat;
 	long	time_to_sleep;
-	int		limit_meals; //optional the fifth agrument
-	// bool	threads_ready; // maybe doesn't need this
+	int	limit_meals; //optional the fifth agrument
 	long	start_simulation; //timestamp
 	bool	end_simulation; //on philo is dead || all philo is full (what would be a condition for this? --> limit number of meals)
 	pthread_t	monitor;
@@ -99,28 +90,27 @@ typedef struct s_data
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t meal_mutex;
 	pthread_mutex_t	monitor_mutex;
-	pthread_mutex_t	end_mutex; //
+	pthread_mutex_t	end_mutex;
 	pthread_mutex_t *forks;
-	// t_fork	*forks; //array to all the forks
-	t_philo	*philos; //array to all the philos, double pointers?
+	t_philo	*philos;
 }	t_data;
 
 //// fork is mulex in this context
 
 // Parsing agruments
-void	parse_input(char **argv, t_data *data);
+bool	parse_input(char **argv, t_data *data);
 
 // Simulation
 void	write_status(t_philo *philo, t_philo_status status);
 void	start_simulation(t_data *data);
-void    eating(t_philo *philo);
-void    thinking(t_philo *philo);
+void	eating(t_philo *philo);
+void	thinking(t_philo *philo);
 void	sleeping(t_philo *philo);
+void	one_philo(t_data *data, t_philo *philo);
 
 // Utility Function
-long	ft_atol(char const *str);
 void	exit_error(const char *str);
-void	*malloc_handler(size_t bytes);
+// void	*malloc_handler(size_t bytes);
 void	mutex_error_handler(int status, t_opcode opcode);
 void	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode);
 void	thread_error_handler(int status, t_opcode opcode);
@@ -130,7 +120,9 @@ long	ft_gettime(void);
 void	ft_usleep(long consumed_time);
 
 // init
-void    data_init(t_data *data);
+bool	data_init(t_data *data);
 
+//clean data
+void	clean_data(t_data *data);
 
 #endif

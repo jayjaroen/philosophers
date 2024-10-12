@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 15:23:36 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/11 15:37:37 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:45:09 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ static bool is_dead(t_data *data)
 			data->end_simulation = true;
 			mutex_handler(&data->end_mutex, UNLOCK);
 			write_status(philo, DIED);
-			// printf(RED "philo no: %d died" RESET "\n", philo[i].id);
 			return (true);
 		}
 		mutex_handler(&data->meal_mutex, UNLOCK);
@@ -76,6 +75,11 @@ static void	*thread_monitor(void *args)
 
 	data = (t_data *)args;
 	printf(YELLOW "I am in the thread monitoring loop" RESET "\n");
+	if (data->num_philo == 1)
+	{
+		printf("one philo exiting...\n");
+		return (NULL);
+	}
 	while (true)
 	{
 		printf(RED "I am here" RESET "\n");
@@ -89,10 +93,6 @@ static void	*thread_monitor(void *args)
 		}
 		if (is_dead(data))
 		{
-			// To free data
-			// Destroy thread --> no need to join later?
-			// finished before joining the program
-			// should avoid this
 			return (NULL);
 		}
 	}
@@ -105,22 +105,22 @@ static void	*philo_simulation(void *args)
 	t_philo *philo;
 	t_data	*data;
 	
+	printf("INSIDE philo sim\n");
 	philo = (t_philo*)args;
-	data = philo->data;
+	data = philo->data;	
+    if	(data->num_philo == 1)
+	{
+		one_philo(data, philo);
+		return (NULL);
+	}
 	if (philo->id % 2 == 0)
 		usleep(100);
-	while (!data->end_simulation)
+	while (true)
 	{
 		printf("----------- Inside philo_simulation loop-----------\n");
-		if (philo->is_full || data->end_simulation)//each thread full
-			return (NULL);
 		eating(philo);
-		// check is_full, end_simulation
-		// if (data->end_simulation)
-		// {
-		// 	//free data
-		// 	return (NULL);
-		// }
+		if (philo->is_full || data->end_simulation)//each thread full
+			break ;
 		sleeping(philo);
 		thinking(philo);
 		printf(YELLOW "Hi I am at the end of the loop" RESET "\n");
@@ -132,35 +132,21 @@ void	start_simulation(t_data *data)
 {
 	int i;
 
-    if	(data->num_philo == 1)
-		//TODO // enter the loop & died or handcoded?
-		// no second fork // died
-		// to write one philo function
-		return ;
 	i = -1;
 	data->start_simulation = ft_gettime();
 	printf(CYAN "the time is: %ld" RESET "\n", data->start_simulation);
 	printf("the num of philo: %d\n", data->num_philo);
 	thread_handler(&data->monitor, &thread_monitor, data, CREATE);//simulatenous
-	if (pthread_create(&data->monitor, NULL, thread_monitor, data))
-	{
-		printf(RED "Failed to create thread" RESET "\n");
-		return ;
-	}
 	while (++i < data->num_philo)
 	{
+		printf("inside creating thread....\n");
 		thread_handler(&data->philos[i].thread_id, &philo_simulation, &data->philos[i], CREATE);
 	}
 	printf("------------- all threads created-------------\n");
-	thread_handler(&data->monitor, NULL, NULL, JOIN);
     i = -1;
     while (++i < data->num_philo)
 	{
         thread_handler(&data->philos[i].thread_id, NULL, NULL, JOIN);
 	}
-	// TODO: write function that end simulation
-	// clean functions
-	// Normal retrun free at main function
-	// free(data->philos);
-	// Calling free function
+	thread_handler(&data->monitor, NULL, NULL, JOIN);
 }
