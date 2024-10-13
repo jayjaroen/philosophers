@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 14:58:30 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/12 16:12:09 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:09:05 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,25 +92,14 @@ bool	data_init(t_data *data)
 	data->end_simulation = false;
 	data->philos = malloc(sizeof(t_philo) * data->num_philo);
 	if (!data->philos)
-	{
-		printf(RED "Failed to malloc philos" RESET "\n");
 		return (false);
-	}
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philo);
 	if (!data->forks)
-	{
-		printf(RED "Failed to malloc forks" RESET "\n");
 		return (false);
-	}
 	if (!fork_mutex_init(data))
 		return (false);
 	philo_init(data);
 	if (!program_mutex(data))
 		return (false);
-	// mutex_handler(&data->write_mutex, INIT);
-	// mutex_handler(&data->philo_mutex, INIT);
-	// mutex_handler(&data->monitor_mutex, INIT);
-	// mutex_handler(&data->meal_mutex, INIT);
-	// mutex_handler(&data->end_mutex, INIT);
 	return (true);
 }

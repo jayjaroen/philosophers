@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:59:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/12 15:51:17 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:48:35 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ typedef enum e_philo_status
 	THINK,
 	TAKE_FIRST_FORK,
 	TAKE_SECOND_FORK,
-	LET_GO_FIRST, //TO DELETE should I include this?
-	LET_GO_SECOND,
 	DIED,
 }	t_philo_status;
 
@@ -67,24 +65,24 @@ typedef enum e_opcode
 typedef struct s_philo
 {
 	int			id;
-	long		meal_counter; // if all reach limit meal then end the simulation
+	long		meal_counter;
 	long		last_meal_time;
 	bool		is_full;
 	pthread_mutex_t	*first_fork;
 	pthread_mutex_t	*second_fork;
-	pthread_t	thread_id; //each philo is a thread	
-	t_data		*data; // have accessing to all the data
+	pthread_t	thread_id;
+	t_data		*data;
 }	t_philo;
 
 typedef struct s_data
 {
 	int	num_philo;
-	long	time_to_die; //shouldn't this be in the philo struct? 
+	long	time_to_die;
 	long	time_to_eat;
 	long	time_to_sleep;
-	int	limit_meals; //optional the fifth agrument
-	long	start_simulation; //timestamp
-	bool	end_simulation; //on philo is dead || all philo is full (what would be a condition for this? --> limit number of meals)
+	int	limit_meals;
+	long	start_simulation;
+	bool	end_simulation;
 	pthread_t	monitor;
 	pthread_mutex_t	philo_mutex;
 	pthread_mutex_t	write_mutex;
@@ -95,32 +93,28 @@ typedef struct s_data
 	t_philo	*philos;
 }	t_data;
 
-//// fork is mulex in this context
-
-// Parsing agruments
+// Parsing && INIT
 bool	parse_input(char **argv, t_data *data);
-
+bool	data_init(t_data *data);
 // Simulation
 void	write_status(t_philo *philo, t_philo_status status);
-void	start_simulation(t_data *data);
+bool	start_simulation(t_data *data);
 void	eating(t_philo *philo);
 void	thinking(t_philo *philo);
 void	sleeping(t_philo *philo);
 void	one_philo(t_data *data, t_philo *philo);
+bool	end_simulation(t_data *data);
 
 // Utility Function
-void	exit_error(const char *str);
+// void	exit_error(const char *str);
 // void	*malloc_handler(size_t bytes);
-void	mutex_error_handler(int status, t_opcode opcode);
-void	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode);
-void	thread_error_handler(int status, t_opcode opcode);
-void    thread_handler(pthread_t *th, void * (*foo)(void *), void *data, 
+// void	mutex_error_handler(int status, t_opcode opcode);
+bool	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode);
+// void	thread_error_handler(int status, t_opcode opcode);
+bool    thread_handler(pthread_t *th, void * (*foo)(void *), void *data, 
     t_opcode opcode);
 long	ft_gettime(void);
 void	ft_usleep(long consumed_time);
-
-// init
-bool	data_init(t_data *data);
 
 //clean data
 void	clean_data(t_data *data);

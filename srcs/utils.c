@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 15:08:42 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/12 14:37:23 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:47:27 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 // check for valid input: 1) check for negative, 2) change if the number is legit
 // change for INT_MAX
 // check len 
-void	exit_error(const char *str)
-{
-	printf(RED"%s" RESET "\n", str);
-	// calling free function
-	// free fork, free philo
-	exit(EXIT_FAILURE); // can't use exit
-	// Free philo && fork if exit, import data//
-}
+// void	exit_error(const char *str)
+// {
+// 	printf(RED"%s" RESET "\n", str);
+// 	// calling free function
+// 	// free fork, free philo
+// 	exit(EXIT_FAILURE); // can't use exit
+// 	// Free philo && fork if exit, import data//
+// }
 
 // void	*malloc_handler(size_t bytes)
 // {
@@ -33,37 +33,59 @@ void	exit_error(const char *str)
 // 		exit_error("Failed to malloc");
 // 	return (res);
 // }
-
-void	mutex_error_handler(int status, t_opcode opcode)
+bool	end_simulation(t_data *data)
 {
-	if (status == 0)
-		return ;
-	else if (status == EINVAL && (opcode == LOCK || opcode == UNLOCK))
-		exit_error("The value specified by mutex is invalid.");
+	mutex_handler(&data->end_mutex, LOCK);
+	if (data->end_simulation)
+	{
+		mutex_handler(&data->end_mutex, UNLOCK);
+		return (true);
+	}
+	return (false);
+}
+
+static void	print_mutex_error(int status, t_opcode opcode)
+{
+	if (status == EINVAL && (opcode == LOCK || opcode == UNLOCK))
+		printf(RED "The value specified by mutex is invalid." RESET "\n");
 	else if (status == EINVAL && opcode == INIT)
-		exit_error("The value specified by attr is invalid.");
+		printf(RED "The value specified by attr is invalid." RESET "\n");
 	else if (status == EINVAL && opcode == DESTROY)
-		exit_error("The value specified by mutex is invalid.");
+		printf(RED "The value specified by mutex is invalid." RESET "\n");
 	else if (status == EBUSY)
-		exit_error("Mutex is locked.");
+		printf(RED "Mutex is locked." RESET "\n");
 	else if (status == ENOMEM)
-		exit_error("The process cannot allocate enough memory to create another mutex.");
+		printf(RED "The process cannot allocate enough memory to create \
+		another mutex." RESET "\n");
 	else if (status == EPERM)
-		exit_error("The current thread does not hold a lock on mutex.");
+		printf(RED "The current thread does not hold a lock on mutex." \
+		RESET "\n");
 	else if (status == EDEADLK)
-		exit_error("The current thread does not hold a lock on mutex.");	
+		printf(RED "The current thread does not hold a lock on mutex." \
+		RESET "\n");	
 }
 // mutex handling /// LOCK, UNLOCK, INIT, DESTROY
-void	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode)
+bool	mutex_handler(pthread_mutex_t *mutex, t_opcode opcode)
 {
-	if (opcode == LOCK)
-		mutex_error_handler(pthread_mutex_lock(mutex), opcode);
-	else if (opcode == UNLOCK)
-		mutex_error_handler(pthread_mutex_unlock(mutex), opcode);
-	else if (opcode == INIT)
-		mutex_error_handler(pthread_mutex_init(mutex, NULL), opcode);
-	else if (opcode == DESTROY)
-		mutex_error_handler(pthread_mutex_destroy(mutex), opcode);
-	else
-		exit_error("Wrong operation code for mutex");
+	if (opcode == LOCK && pthread_mutex_lock(mutex) != 0)
+	{
+		print_mutex_error(pthread_mutex_lock(mutex), opcode);
+		return (false);
+	}
+	else if (opcode == UNLOCK && pthread_mutex_unlock(mutex) != 0)
+	{
+		print_mutex_error(pthread_mutex_unlock(mutex), opcode);
+		return (false);
+	}
+	else if (opcode == INIT && pthread_mutex_init(mutex, NULL) != 0)
+	{
+		print_mutex_error(pthread_mutex_init(mutex, NULL), opcode);
+		return (false);
+	}
+	else if (opcode == DESTROY && pthread_mutex_destroy(mutex) != 0)
+	{
+		print_mutex_error(pthread_mutex_destroy(mutex), opcode);
+		return (false);
+	}
+	return (true);
 }

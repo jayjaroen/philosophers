@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   action.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:13:54 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/12 16:27:10 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:38:35 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,15 @@ void	eating(t_philo *philo)
 	philo->last_meal_time = ft_gettime();
 	philo->meal_counter++;
 	mutex_handler(&data->meal_mutex, UNLOCK);
-	printf(MAGENTA"Philo %d meal counter: %ld" RESET "\n",philo->id, philo->meal_counter);
+	// printf(MAGENTA"Philo %d meal counter: %ld" RESET "\n",philo->id, philo->meal_counter);
 	if (philo->meal_counter == data->limit_meals && (data->limit_meals > 0))
 	{
 		mutex_handler(&data->philo_mutex, LOCK);
 		philo->is_full = true;
 		mutex_handler(&data->philo_mutex, UNLOCK);
 	}
-	mutex_handler(philo->first_fork, UNLOCK);
-	write_status(philo, LET_GO_FIRST); // to delete debug
 	mutex_handler(philo->second_fork, UNLOCK);
-	write_status(philo, LET_GO_SECOND);// to delete
+	mutex_handler(philo->first_fork, UNLOCK);
 }
 
 void    thinking(t_philo *philo)
