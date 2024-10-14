@@ -6,7 +6,7 @@
 #    By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/03 12:58:43 by jjaroens          #+#    #+#              #
-#    Updated: 2024/10/12 13:37:49 by jjaroens         ###   ########.fr        #
+#    Updated: 2024/10/14 15:39:09 by jjaroens         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,9 @@ HEADER = $(INCLUDE)/philo.h
 
 OBJS = $(SRCS:.c=.o)
 
-CC = cc 
+CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 

@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils_cont.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/13 22:51:24 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/14 16:13:18 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
-//thread handler// CREATE/ INIT/ JOIN/ DETACH
+
 static void	print_thread_error(int status, t_opcode opcode)
 {
 	if (status == EAGAIN)
@@ -28,25 +28,24 @@ static void	print_thread_error(int status, t_opcode opcode)
 		printf(RED "No thread could be found");
 	else if (status == EDEADLK)
 		printf(RED "A deadlock was detected");
-} 
+}
 
-//or maybe don't have to print this out
-bool    thread_handler(pthread_t *th, void * (*foo)(void *), void *data, 
-    t_opcode opcode)
+bool	thread_handler(pthread_t *th, void *(*foo)(void *), void *data,
+t_opcode opcode)
 {
-    if (opcode == CREATE && pthread_create(th, NULL, foo, data) != 0)
+	if (opcode == CREATE && pthread_create(th, NULL, foo, data) != 0)
 	{
 		print_thread_error(pthread_create(th, NULL, foo, data), opcode);
 		return (false);
 	}
-    else if (opcode == JOIN && pthread_join(*th, NULL) != 0)
+	else if (opcode == JOIN && pthread_join(*th, NULL) != 0)
 	{
-        print_thread_error(pthread_join(*th, NULL), opcode);
+		print_thread_error(pthread_join(*th, NULL), opcode);
 		return (false);
 	}
-    else if (opcode == DETACH && pthread_detach(*th) != 0)
+	else if (opcode == DETACH && pthread_detach(*th) != 0)
 	{
-        print_thread_error(pthread_detach(*th), opcode);
+		print_thread_error(pthread_detach(*th), opcode);
 		return (false);
 	}
 	return (true);
@@ -54,61 +53,53 @@ bool    thread_handler(pthread_t *th, void * (*foo)(void *), void *data,
 
 long	ft_gettime(void)
 {
-	// To return in milliseconds
-	struct timeval tv;
+	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL))
 	{
 		printf(RED "Failed to get time" RESET "\n");
 		return (0);
 	}
-	// return ((tv.tv_sec * 1e3) + (tv.tv_usec/ 1e3));
-	return ((tv.tv_sec * 1000) + (tv.tv_usec/1000)); 
-	//The L suffix ensures that the multiplication is done using long integers.
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	write_status(t_philo *philo, t_philo_status status)
+int	write_status(t_philo *philo, t_philo_status status)
 {
 	t_data	*data;
 	long	elapsed_time;
-	
+
 	data = philo->data;
 	mutex_handler(&data->write_mutex, LOCK);
 	elapsed_time = ft_gettime() - data->start_simulation;
-	if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d has taken a fork" 
-		RESET "\n", elapsed_time, philo->id);
+	if (status == DIED)
+		printf(GREEN "%-6ld" RED "%d died" RESET "\n",
+			elapsed_time, philo->id);
+	if (end_simulation(data, philo))
+		return (mutex_handler(&data->write_mutex, UNLOCK));
+	else if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
+		printf(GREEN "%-6ld" CYAN "%d has taken a fork"
+			RESET "\n", elapsed_time, philo->id);
 	else if (status == EAT)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d is eating" RESET "\n",
-		elapsed_time, philo->id);
+		printf(GREEN "%-6ld" CYAN "%d is eating" RESET "\n",
+			elapsed_time, philo->id);
 	else if (status == SLEEP)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d is sleeping" RESET "\n",
-		elapsed_time, philo->id);
+		printf(GREEN "%-6ld" CYAN "%d is sleeping" RESET "\n",
+			elapsed_time, philo->id);
 	else if (status == THINK)
-		printf(GREEN "%-6ld" CYAN "Philo no. %d is thinking" RESET "\n",
-		elapsed_time, philo->id);
-	else if (status == DIED)
-		printf(GREEN "%-6ld" RED "Philo no. %d died" RESET "\n",
-		elapsed_time, philo->id);
+		printf(GREEN "%-6ld" CYAN "%d is thinking" RESET "\n",
+			elapsed_time, philo->id);
 	mutex_handler(&data->write_mutex, UNLOCK);
+	return (1);
 }
 
+/* micro sec */
 void	ft_usleep(long consumed_time)
 {
 	long	start;
-	long	elapsed_time;
-	long	remaining_time;
-	
-	start = ft_gettime();// result in milliseconds
+
+	start = ft_gettime();
 	while (ft_gettime() - start < consumed_time)
 	{
-		//check - get_bool function condition and break
-		// end_time is true then should get out of the loop
-		// the condition to break out the loop: 1) The time is over; 2) the end
-		// time is up (simulation end time?)
-		elapsed_time = ft_gettime() - start;
-		remaining_time = consumed_time - elapsed_time;
-		if (remaining_time > 1e7) // 10,000 microseconds
-			usleep(remaining_time/2);
+		usleep(100);
 	}
 }
