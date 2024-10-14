@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_cont.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jjaroens <jjaroens@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 20:05:12 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/14 16:13:18 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/14 22:19:30 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	write_status(t_philo *philo, t_philo_status status)
 		printf(GREEN "%-6ld" CYAN "%d is thinking" RESET "\n",
 			elapsed_time, philo->id);
 	mutex_handler(&data->write_mutex, UNLOCK);
-	return (1);
+	return (0);
 }
 
 /* micro sec */
