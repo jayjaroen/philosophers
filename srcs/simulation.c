@@ -6,7 +6,7 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 15:23:36 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/14 16:08:14 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/15 15:39:33 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static bool	is_dead(t_data *data)
 			mutex_handler(&data->end_mutex, LOCK);
 			data->end_simulation = true;
 			mutex_handler(&data->end_mutex, UNLOCK);
-			write_status(philo, DIED);
+			write_status(&philo[i], DIED);
 			return (true);
 		}
 		mutex_handler(&data->meal_mutex, UNLOCK);
