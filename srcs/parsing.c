@@ -6,13 +6,13 @@
 /*   By: jjaroens <jjaroens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 16:13:35 by jjaroens          #+#    #+#             */
-/*   Updated: 2024/10/14 13:07:26 by jjaroens         ###   ########.fr       */
+/*   Updated: 2024/10/15 15:57:41 by jjaroens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-static bool	is_digit(char c)
+static bool	is_digit(const char *str)
 {
 	return (c >= '0' && c <= '9');
 }
@@ -25,6 +25,7 @@ static bool	is_space(char c)
 static const char	*check_valid(const char *str)
 {
 	int			i;
+	int			j;
 	const char	*num;
 
 	i = 0;
@@ -37,12 +38,17 @@ static const char	*check_valid(const char *str)
 		printf(RED "Only positive value is allowed." RESET "\n");
 		return (NULL);
 	}
-	if (!is_digit(str[i]))
+	j = i;
+	while (str[i])
 	{
-		printf(RED "Only digit is allowed." RESET "\n");
-		return (NULL);
+		if (!is_digit(str[i]))
+		{
+			printf(RED "Only digit is allowed." RESET "\n");
+			return (NULL);
+		}
+		i++;
 	}
-	num = &str[i];
+	num = &str[j];
 	return (num);
 }
 
